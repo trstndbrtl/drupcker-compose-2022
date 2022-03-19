@@ -13,7 +13,7 @@
 
 Here is an overview of the working environment folder
 
-### Contenu du dossier
+### File contents
 
 ```
 ├───config  *   *   *   *   *   *   Docker images configurations folder
@@ -58,7 +58,7 @@ The database must be placed in the **postgresql/gln_pg_initdb** folder, to be im
 │   └───gln_pg_initdb        
 ```
 
-### Variable
+### Variables
 Before starting the containers, at the root of the Docker project, please copy the `.env.default` file, renaming it `.env`, then replace the varibales as you wish.
 To test the project, you can leave the default variables.
 
@@ -130,7 +130,7 @@ For the build of the image and the deployment of the container:
 - I go to the root of the project and I run the following command.
 
 ```bash
-docker build -f ./config/prod/Dockerfile -t learn/app/d9.3.8:1.0.1 --no-cache .
+docker build -f ./config/production/Dockerfile -t learn/app/d9.3.8:1.0.1 --no-cache .
 ```
 
 #### Command description
@@ -138,7 +138,7 @@ docker build -f ./config/prod/Dockerfile -t learn/app/d9.3.8:1.0.1 --no-cache .
 - We tell Docker which Dockerfile to use
 
 ```
--f ./config/prod/Dockerfile 
+-f ./config/production/Dockerfile 
 ```
 
 - Then the name and the tags of the image

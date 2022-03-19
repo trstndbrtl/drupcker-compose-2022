@@ -57,7 +57,7 @@ La base de donnée doit etre placée dans le dossier **postgresql/gln_pg_initdb*
 │   └───gln_pg_initdb        
 ```
 
-### Variable
+### Variables
 Avant de demarrer les containers, à la racine du projet Docker, veuillez copier le fichier `.env.default` en le renommant `.env`, puis remplacer les varibales selon votre convenance. 
 Pour tester le projet, vous pouvez laisser les varibales par defaut.
 
@@ -128,14 +128,14 @@ Pour le build de l'image et le deployement du container :
 - Je me place à la racine du projet et je lance la commande suivante.
 
 ```bash
-docker build -f ./config/prod/Dockerfile -t learn/app/d9.3.8:1.0.1 --no-cache .
+docker build -f ./config/production/Dockerfile -t learn/app/d9.3.8:1.0.1 --no-cache .
 ```
 
 #### Description de la commande
 
 - On indique à Docker quel fichier Dockerfile utiliser
 ```
--f ./config/prod/Dockerfile 
+-f ./config/production/Dockerfile 
 ```
 - Puis le nom et le tags de l'image
 ```
