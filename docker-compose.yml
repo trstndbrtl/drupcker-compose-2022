@@ -1,6 +1,7 @@
 version: '3.6'
 services:
 
+  # Drupal app
   learnappdrupal:
     hostname: ${DRUPAL_HOST}
     container_name: learnappdrupal
@@ -41,6 +42,7 @@ services:
     depends_on:
       - learnpg
 
+  #serveur postgres
   learnpgsql:
     container_name: learnpgsql
     image: postgres
@@ -60,6 +62,7 @@ services:
     networks:
       - learnmigrationnet
 
+  # pgadmin for postgres
   learnpgsqladmin:
     container_name: learnpgsqladmin
     image: dpage/pgadmin4
@@ -74,7 +77,7 @@ services:
     depends_on:
       - learnpgsql
 
-  # Postgres to store data
+  # Maria db serveur
   learnmaria:
     container_name: learnmaria
     image: mariadb
@@ -91,7 +94,7 @@ services:
     networks:
       - learnmigrationnet
 
-  # Adminer to manipulate db
+  # Adminer for mariadb
   learndmnr:
     image: adminer
     container_name: learndmnr

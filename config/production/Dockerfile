@@ -91,6 +91,7 @@ ENV PATH=${PATH}:/opt/drupal/vendor/bin
 
 # Install composer stuff
 RUN composer install --no-dev
+ENV COMPOSER_MEMORY_LIMIT=-1
 
 # Run entrypoint script
 COPY ./config/production/entrypoint.sh /opt/drupal/entrypoint.sh
