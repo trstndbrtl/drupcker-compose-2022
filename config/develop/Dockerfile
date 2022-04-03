@@ -76,6 +76,7 @@ RUN set -eux; \
 
 # Add composer path to path server
 ENV PATH=${PATH}:/opt/drupal/vendor/bin
+ENV COMPOSER_MEMORY_LIMIT=-1
 
 # Run entrypoint script
 COPY ./config/develop/entrypoint.sh /opt/drupal/entrypoint.sh

@@ -88,7 +88,7 @@ COPY ./var/html/composer.json /opt/drupal/composer.json
 
 # Add composer path to path server
 ENV PATH=${PATH}:/opt/drupal/vendor/bin
-
+ENV COMPOSER_MEMORY_LIMIT=-1
 # Install composer stuff
 RUN composer install --no-dev
 
