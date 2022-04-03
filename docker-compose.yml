@@ -1,9 +1,9 @@
 version: '3.6'
 services:
 
-  learnapp:
+  learnappdrupal:
     hostname: ${DRUPAL_HOST}
-    container_name: learnapp
+    container_name: learnappdrupal
     restart: always
     image: learn/app/d${DRUPAL_VERSION}:${DRUPAL_TAG}
     environment:
@@ -37,12 +37,12 @@ services:
       - ./config/${ENV_ID}/apache2/000-default.conf:/etc/apache2/sites-available/000-default.conf
       - ./config/${ENV_ID}/env/work/.bashrc:/root/.bashrc
     networks:
-      - learnnet
+      - learnmigrationnet
     depends_on:
       - learnpg
 
-  learnpg:
-    container_name: learnpg
+  learnpgsql:
+    container_name: learnpgsql
     image: postgres
     restart : always
     ports:
@@ -58,21 +58,50 @@ services:
       - ./postgresql/gln_pg_initdb:/docker-entrypoint-initdb.d
       - postgresql:/var/lib/postgresql/data
     networks:
-      - learnnet
+      - learnmigrationnet
 
-  learnpgadmin:
-    container_name: learnpgadmin
+  learnpgsqladmin:
+    container_name: learnpgsqladmin
     image: dpage/pgadmin4
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "${PG_ADMIN_PORT}:80"
     networks:
-      - learnnet
+      - learnmigrationnet
     depends_on:
-      - learnpg
+      - learnpgsql
+
+  # Postgres to store data
+  learnmaria:
+    container_name: learnmaria
+    image: mariadb
+    restart: always
+    command: ['--character-set-server=utf8', '--collation-server=utf8_unicode_ci']
+    volumes:
+      - d8-maria-migrate:/var/lib/mysql
+      #- '/Users/mm/Documents/Workspace/Docker/maison_dev/d8-shared:/tmp/plus'
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: d8magazin9
+    ports:
+     - ${MARIA_PORT}:3306
+    networks:
+      - learnmigrationnet
+
+  # Adminer to manipulate db
+  learndmnr:
+    image: adminer
+    container_name: learndmnr
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
+    networks:
+      - learnmigrationnet
+    depends_on:
+      - learnmaria
 
 volumes:
   modules:
@@ -91,9 +120,10 @@ volumes:
     driver: local
   gln_pg_initdb:
     driver: local
-  db:
+   # DB
+  d8-maria-migrate:
     driver: local
 
 networks:
-  learnnet:
+  learnmigrationnet:
     driver: bridge
