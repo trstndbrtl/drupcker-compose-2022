@@ -1,12 +1,12 @@
 version: '3.6'
 services:
 
-  # Drupal app
+  # Drupal App
   learnappdrupal:
     hostname: ${DRUPAL_HOST}
     container_name: learnappdrupal
     restart: always
-    image: learn/app/d${DRUPAL_VERSION}:${DRUPAL_TAG}
+    image: learn/app/mlearn${DRUPAL_VERSION}:${DRUPAL_TAG}
     environment:
       # ENV
       ENV_ID: ${ENV_ID}
@@ -42,7 +42,7 @@ services:
     depends_on:
       - learnpg
 
-  #serveur postgres
+  # Postgres server
   learnpgsql:
     container_name: learnpgsql
     image: postgres
@@ -62,7 +62,7 @@ services:
     networks:
       - learnmigrationnet
 
-  # pgadmin for postgres
+  # Pgadmin for postgres
   learnpgsqladmin:
     container_name: learnpgsqladmin
     image: dpage/pgadmin4
@@ -77,7 +77,7 @@ services:
     depends_on:
       - learnpgsql
 
-  # Maria db serveur
+  # Mariadb Server
   learnmaria:
     container_name: learnmaria
     image: mariadb
@@ -85,7 +85,6 @@ services:
     command: ['--character-set-server=utf8', '--collation-server=utf8_unicode_ci']
     volumes:
       - d8-maria-migrate:/var/lib/mysql
-      #- '/Users/mm/Documents/Workspace/Docker/maison_dev/d8-shared:/tmp/plus'
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: d8magazin9
@@ -107,6 +106,7 @@ services:
       - learnmaria
 
 volumes:
+  # Drupal App
   modules:
     driver: local
   profiles:
@@ -119,11 +119,13 @@ volumes:
     driver: local
   config:
     driver: local
+  # Postgresql server
   postgresql:
     driver: local
+  # Init Postgresql folder
   gln_pg_initdb:
     driver: local
-   # DB
+  # Db mysql
   d8-maria-migrate:
     driver: local
 
