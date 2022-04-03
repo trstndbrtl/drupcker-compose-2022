@@ -1,0 +1,99 @@
+version: '3.6'
+services:
+
+  learnapp:
+    hostname: ${DRUPAL_HOST}
+    container_name: learnapp
+    restart: always
+    image: learn/app/d${DRUPAL_VERSION}:${DRUPAL_TAG}
+    environment:
+      # ENV
+      ENV_ID: ${ENV_ID}
+      # PG
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    build:
+      dockerfile: ./config/${ENV_ID}/Dockerfile
+      context: ./
+      args:
+        DRUPAL_HOST: ${DRUPAL_HOST}
+        DRUPAL_VERSION: ${DRUPAL_VERSION}
+    ports:
+      - ${DRUPAL_PORT}:80
+    volumes:
+      - ./var/html/web/modules:/var/www/html/modules
+      - ./var/html/web/profiles:/var/www/html/profiles
+      - ./var/html/web/themes:/var/www/html/themes
+      - ./var/html/web/libraries:/var/www/html/libraries
+      - ./var/html/web/sites:/var/www/html/sites
+      - ./var/html/config:/opt/drupal/config
+      - ./var/html/translations:/opt/drupal/translations
+      - ./var/html/features:/opt/drupal/features
+      - ./var/html/composer.json:/opt/drupal/composer.json
+      - ./var/html/behat.yml:/opt/drupal/behat.yml
+      - ./config/${ENV_ID}/apache2/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./config/${ENV_ID}/env/work/.bashrc:/root/.bashrc
+    networks:
+      - learnnet
+    depends_on:
+      - learnpg
+
+  learnpg:
+    container_name: learnpg
+    image: postgres
+    restart : always
+    ports:
+      - "${POSTGRES_CONTAINER_PORT}:5432"
+    environment:
+      ENV_ID: $${ENV_ID}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    volumes:
+      - ./postgresql/gln_pg_initdb:/docker-entrypoint-initdb.d
+      - postgresql:/var/lib/postgresql/data
+    networks:
+      - learnnet
+
+  learnpgadmin:
+    container_name: learnpgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "${PG_ADMIN_PORT}:80"
+    networks:
+      - learnnet
+    depends_on:
+      - learnpg
+
+volumes:
+  modules:
+    driver: local
+  profiles:
+    driver: local
+  themes:
+    driver: local
+  libraries:
+    driver: local
+  sites:
+    driver: local
+  config:
+    driver: local
+  postgresql:
+    driver: local
+  gln_pg_initdb:
+    driver: local
+  db:
+    driver: local
+
+networks:
+  learnnet:
+    driver: bridge
